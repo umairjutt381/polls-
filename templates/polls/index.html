@@ -1,0 +1,132 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Available Polls</title>
+    <style>
+        /* ===== Base Styles ===== */
+        body {
+            font-family: "Poppins", sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #2d3748;
+            margin: 0;
+            padding: 50px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: #ffffff;
+            padding: 40px 50px;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            width: 90%;
+            max-width: 700px;
+            animation: fadeIn 0.8s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            text-align: center;
+            color: #4c51bf;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 30px;
+        }
+
+        /* ===== Poll List ===== */
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            padding: 15px 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+        }
+
+        li:hover {
+            background: #edf2f7;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+
+        li a {
+            text-decoration: none;
+            color: #2d3748;
+            font-weight: 500;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        li a::after {
+            content: "→";
+            color: #667eea;
+            font-weight: bold;
+            transition: transform 0.3s;
+        }
+
+        li a:hover::after {
+            transform: translateX(5px);
+        }
+
+        /* ===== Empty State ===== */
+        .no-polls {
+            text-align: center;
+            color: #718096;
+            background: #fefcbf;
+            border: 1px solid #faf089;
+            padding: 15px;
+            border-radius: 10px;
+            font-style: italic;
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px;
+            }
+            h1 {
+                font-size: 22px;
+            }
+            li a {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Available Polls</h1>
+
+        {% if latest_question_list %}
+            <ul>
+                {% for question in latest_question_list %}
+                    <li>
+                        <a href="/polls/{{ question.id }}/">
+                            {{ question.question_text }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="no-polls">No polls are available.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

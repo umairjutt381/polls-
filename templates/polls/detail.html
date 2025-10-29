@@ -1,0 +1,134 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ question.question_text }}</title>
+    <style>
+        /* ===== Base ===== */
+        body {
+            font-family: "Poppins", sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #2d3748;
+            margin: 0;
+            padding: 50px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: #ffffff;
+            padding: 40px 50px;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            width: 90%;
+            max-width: 600px;
+            animation: fadeIn 0.8s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            color: #4c51bf;
+            text-align: center;
+            font-size: 26px;
+            font-weight: 600;
+            margin-bottom: 25px;
+        }
+
+        /* ===== Choices ===== */
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            padding: 12px 18px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            font-size: 16px;
+            color: #2d3748;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        li:hover {
+            background: #ebf4ff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        li::after {
+            content: "🗳️";
+            opacity: 0.7;
+        }
+
+        /* ===== Back Button ===== */
+        .back-link {
+            display: inline-block;
+            margin-top: 25px;
+            background: #667eea;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background 0.3s;
+            font-weight: 500;
+        }
+
+        .back-link:hover {
+            background: #5a67d8;
+        }
+
+        .empty {
+            text-align: center;
+            color: #718096;
+            background: #fefcbf;
+            border: 1px solid #faf089;
+            padding: 15px;
+            border-radius: 10px;
+            font-style: italic;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px;
+            }
+            h1 {
+                font-size: 22px;
+            }
+            li {
+                font-size: 15px;
+                padding: 10px 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>{{ question.question_text }}</h1>
+
+        {% if question.choice_set.all %}
+            <ul>
+                {% for choice in question.choice_set.all %}
+                    <li>{{ choice.choice_text }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="empty">No choices are available for this question.</p>
+        {% endif %}
+
+        <a href="{% url 'index' %}" class="back-link">← Back to Polls</a>
+    </div>
+</body>
+</html>

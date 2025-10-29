@@ -1,0 +1,138 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Results | {{ question.question_text }}</title>
+  <style>
+    /* ===== Base Layout ===== */
+    body {
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #43cea2, #185a9d);
+      color: #2d3748;
+      margin: 0;
+      padding: 50px 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .results-container {
+      background: #ffffff;
+      padding: 40px 50px;
+      border-radius: 16px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+      width: 90%;
+      max-width: 600px;
+      animation: fadeIn 0.8s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===== Title ===== */
+    h1 {
+      text-align: center;
+      color: #185a9d;
+      font-size: 26px;
+      font-weight: 600;
+      margin-bottom: 25px;
+    }
+
+    /* ===== Choice List ===== */
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    li {
+      background: #f7fafc;
+      border: 1px solid #e2e8f0;
+      border-left: 6px solid #43cea2;
+      padding: 14px 18px;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      font-size: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    li:hover {
+      background: #ebf8ff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .vote-count {
+      background: #43cea2;
+      color: white;
+      font-weight: 600;
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 14px;
+      min-width: 60px;
+      text-align: center;
+    }
+
+    /* ===== Buttons/Links ===== */
+    .btn {
+      display: block;
+      width: 100%;
+      text-align: center;
+      background: #185a9d;
+      color: white;
+      text-decoration: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      margin-top: 20px;
+      transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+      background: #154a82;
+      transform: scale(1.02);
+    }
+
+    @media (max-width: 600px) {
+      .results-container {
+        padding: 25px;
+      }
+      h1 {
+        font-size: 22px;
+      }
+      li {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+      }
+      .vote-count {
+        align-self: flex-end;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="results-container">
+    <h1>{{ question.question_text }}</h1>
+
+    <ul>
+      {% for choice in question.choice_set.all %}
+        <li>
+          <span>{{ choice.choice_text }}</span>
+          <span class="vote-count">{{ choice.votes }} vote{{ choice.votes|pluralize }}</span>
+        </li>
+      {% endfor %}
+    </ul>
+
+    <a href="{% url 'polls:detail' question.id %}" class="btn">← Vote Again</a>
+  </div>
+</body>
+</html>
