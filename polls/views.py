@@ -6,7 +6,6 @@ from django.urls import reverse
 from polls.forms import ChoiceForm, QuestionForm
 from polls.models import Question, Choice
 
-
 def detail(request, question_id):
     try:
         question = Question.objects.get(pk=question_id)
@@ -58,3 +57,9 @@ def add_question(request):
         'question_form': question_form,
         'formset': formset
     })
+
+def delete_selected_polls(request):
+    if request.method == 'POST':
+        selected_id = request.POST.getlist('selected_polls')        #getlist is return list of value
+        Question.objects.filter(pk__in=selected_id).delete()
+    return redirect('polls:index')
