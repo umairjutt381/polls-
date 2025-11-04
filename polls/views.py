@@ -1,6 +1,6 @@
 from django.db.models import F
 from django.forms import inlineformset_factory
-from django.http import  HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.urls import reverse
 from polls.forms import ChoiceForm, QuestionForm
 from polls.models import Question, Choice, VoteRecord
@@ -96,11 +96,18 @@ def delete_user(request, user_id):
     messages.success(request, 'User deleted successfully!')
     return redirect('show_context')
 
+@login_required
 def add_question(request):
-    ChoiceFormSet = inlineformset_factory(Question, Choice, form=ChoiceForm, extra=2, can_delete=False )
+    # Only superusers can access
+    if not request.user.is_superuser:
+        return HttpResponseForbidden("You are not authorized to add questions.")
+
+    ChoiceFormSet = inlineformset_factory(Question, Choice, form=ChoiceForm, extra=2, can_delete=False)
+
     if request.method == 'POST':
         question_form = QuestionForm(request.POST)
         formset = ChoiceFormSet(request.POST)
+
         if question_form.is_valid() and formset.is_valid():
             question = question_form.save()
             choices = formset.save(commit=False)
@@ -111,16 +118,24 @@ def add_question(request):
     else:
         question_form = QuestionForm()
         formset = ChoiceFormSet()
-
     return render(request, 'polls/add_question.html', {
         'question_form': question_form,
         'formset': formset
     })
 
+
+@login_required
 def index_view(request):
-    question_list = Question.objects.order_by("-pub_date")[:5]            # :5 use slicing for get latest five question
-    context = {"latest_question_list": question_list}
+    all_questions = Question.objects.order_by("-pub_date")
+    voted_question_ids = VoteRecord.objects.filter(user=request.user).values_list("question_id", flat=True)
+    voted_questions = all_questions.filter(id__in=voted_question_ids)
+    new_questions = all_questions.exclude(id__in=voted_question_ids)
+    context = {
+        "voted_questions": voted_questions,
+        "new_questions": new_questions,
+    }
     return render(request, "polls/index.html", context)
+
 
 @login_required
 def vote(request, question_id):
