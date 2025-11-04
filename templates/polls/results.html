@@ -121,6 +121,8 @@
 </head>
 <body>
   <div class="results-container">
+        <a href="{% url 'polls:logout' %}" class="logout-btn">Logout</a>
+
     <h1>{{ question.question_text }}</h1>
 
     <ul>
@@ -133,6 +135,8 @@
     </ul>
 
     <a href="{% url 'polls:detail' question.id %}" class="btn">← Vote Again</a>
+    <a href="{% url 'polls:show_users' question.id %}">See who voted</a>
+
   </div>
 </body>
 </html>

@@ -1,0 +1,146 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Voted Users</title>
+    <style>
+        body {
+            font-family: "Poppins", sans-serif;
+            background: #f3f6fb;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 80px auto;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 30px 25px;
+            position: relative;
+        }
+
+        .logout-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: #ff5b5b;
+            color: #fff;
+            padding: 8px 14px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 13px;
+            transition: background 0.2s ease;
+        }
+
+        .logout-btn:hover {
+            background: #e04848;
+        }
+
+        h2 {
+            color: #333;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        h3 {
+            color: #555;
+            text-align: center;
+            margin-top: 25px;
+            font-weight: 500;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            margin: 25px 0;
+        }
+
+        li {
+            background: #eef4ff;
+            border: 1px solid #dde4f2;
+            padding: 12px 18px;
+            border-radius: 6px;
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.2s ease;
+        }
+
+        li:hover {
+            background: #e1edff;
+        }
+
+        .username {
+            font-weight: 600;
+            color: #222;
+        }
+
+        .vote-text {
+            background: #4da3ff;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .empty {
+            text-align: center;
+            color: #777;
+            font-style: italic;
+            padding: 15px 0;
+        }
+
+        a.btn {
+            display: inline-block;
+            background: #4da3ff;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            margin: 20px auto 0;
+            transition: background 0.2s ease;
+        }
+
+        a.btn:hover {
+            background: #398ae5;
+        }
+
+        .btn-container {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- Logout button -->
+    <a href="{% url 'polls:logout' %}" class="logout-btn">Logout</a>
+
+    <h2>Poll: {{ question.question_text }}</h2>
+
+    <h3>Users Who Voted</h3>
+
+    <ul>
+        {% for vote in voted_users %}
+            <li>
+                <span class="username">{{ vote.user.username }}</span>
+                <span class="vote-text">{{ vote.choice.choice_text }}</span>
+            </li>
+        {% empty %}
+            <li class="empty">No one has voted yet.</li>
+        {% endfor %}
+    </ul>
+
+    <div class="btn-container">
+        <a href="{% url 'polls:results' question.id %}" class="btn">⬅ Back to Results</a>
+    </div>
+</div>
+</body>
+</html>

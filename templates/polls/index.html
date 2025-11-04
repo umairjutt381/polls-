@@ -109,6 +109,8 @@
         </table>
 
         <div class="actions">
+                    <a href="{% url 'polls:logout' %}" class="logout-btn">Logout</a>
+
             <a href="{% url 'polls:add_question' %}">
                 <button type="button" class="btn-add">+ Add Question</button>
             </a>

@@ -17,11 +17,11 @@ def register_user(request):
         password = request.POST['password']
         if User.objects.filter(username=username).exists():
             messages.error(request, 'Username already exists!')
-            return redirect('register')
+            return redirect('polls:register')
         user = User.objects.create_user(username=username, password=password)
         user.save()
         messages.success(request, 'User registered successfully!')
-        return redirect('login')
+        return redirect('polls:login')
     return render(request, 'polls/register.html')
 
 def login_user(request):
@@ -34,7 +34,7 @@ def login_user(request):
             return redirect('polls:index')
         else:
             messages.error(request, 'Invalid username or password!')
-            return redirect('login')
+            return redirect('polls:login')
     return render(request, 'polls/login.html')
 
 @login_required
@@ -126,8 +126,16 @@ def index_view(request):
 def vote(request, question_id):
     question = get_object_or_404(Question, pk=question_id)
     if VoteRecord.objects.filter(user=request.user, question=question).exists():
-        messages.warning(request, "You have already voted on this poll.")
-        return HttpResponseRedirect(reverse("polls:results", args=(question.id,)))
+        voted_users = VoteRecord.objects.filter(question=question).select_related("user")
+        return render(
+            request,
+            "polls/show_user.html",
+            {
+                "question": question,
+                "voted_users": voted_users,
+                "error_message": "You have already voted on this poll.",
+            },
+        )
     try:
         selected_choice = question.choice_set.get(pk=request.POST["choice"])
     except (KeyError, Choice.DoesNotExist):
@@ -138,7 +146,7 @@ def vote(request, question_id):
         )
     selected_choice.votes = F("votes") + 1
     selected_choice.save()
-    VoteRecord.objects.create(user=request.user, question=question)
+    VoteRecord.objects.create(user=request.user, question=question,choice=selected_choice)
     return HttpResponseRedirect(reverse("polls:results", args=(question.id,)))
 
 @login_required
@@ -157,3 +165,12 @@ def delete_selected_polls(request):
         selected_id = request.POST.getlist('selected_polls')        #getlist is return list of value
         Question.objects.filter(pk__in=selected_id).delete()
     return redirect('polls:index')
+@login_required
+def show_voters(request, question_id):
+    question = get_object_or_404(Question, pk=question_id)
+    voted_users = VoteRecord.objects.filter(question=question).select_related("user", "choice")
+    context = {
+        "question": question,
+        "voted_users": voted_users
+    }
+    return render(request, "polls/show_user.html", context)
