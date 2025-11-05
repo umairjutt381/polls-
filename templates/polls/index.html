@@ -162,8 +162,8 @@
                         <td><a href="{% url 'polls:results' question.id %}">{{ question.question_text }}</a></td>
                         <td>{{ question.pub_date|date:"M. d, Y, P" }}</td>
                         <td>
-                            <a href="{% url 'polls:show_users' question.id %}" class="btn-add">
-                                👥 See Who Voted
+                            <a href="{% url 'polls:results' question.id %}" class="btn-add">
+                                See Votes
                             </a>
                         </td>
                     </tr>

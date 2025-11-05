@@ -134,8 +134,10 @@
       {% endfor %}
     </ul>
 
-    <a href="{% url 'polls:detail' question.id %}" class="btn">← Vote Again</a>
+    <a href="{% url 'polls:detail' question.id %}" class="btn">⬅ Vote Again</a>
+      <a href="{% url 'polls:index' %}" class="btn">⬅ Back to Polls</a>
     <a href="{% url 'polls:show_users' question.id %}">See who voted</a>
+
 
   </div>
 </body>
